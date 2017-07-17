@@ -1,0 +1,91 @@
+<table id="flownotstarttable"></table>
+<script type="text/javascript">
+var flownotstart = {};
+$('#flownotstarttable').datagrid({
+	 url:path+"xtgl/notStartLeave.action",
+	 method:"post",
+	 striped:true,
+	 fit:true,
+	 pagination:true,
+	 singleSelect:true,
+	 queryParams:{},
+	 pageSize:100,
+	 pageList:[100,200],
+	 fitColumns:true,
+	 rownumbers:true,
+	 loadMsg:"数据加载中...",
+	 columns:[[
+	    {field:'flowname',title:'流程名称',align:'left',width:100},
+	    {field:'content',title:'申请内容',align:'left',width:100},
+	    {field:'createtime',title:'创建时间',align:'left',width:100}
+	 ]],
+	 toolbar: [{
+		 text:"启动",
+		 iconCls: 'icon-ok',
+         handler: function() {
+        	 var row = $('#flownotstarttable').datagrid("getSelected");
+        	 if (row == null) {
+        		 common.warning("请先选择一条记录");
+        	 } else {
+        		 $.ajax({
+       				type:"post",
+       				url:path + "xtgl/startFlow.action",
+       				data:{
+       					"leavevo.id":row.id,
+       					"leavevo.flowdefid":row.flowdefid,
+       					"leavevo.userid":row.userid
+       				},
+       				async:true,
+       				dataType:"text",
+       				success:function(d) {
+       					$('#flownotstarttable').datagrid("load");
+       				}
+       			});
+        	 }
+         }
+	 },"-",{
+		text:"编辑",
+		iconCls: 'icon-edit',
+        handler: function() {
+        	var row = $('#flownotstarttable').datagrid("getSelected");
+        	if (row == null) {
+        		common.warning("请先选择一条记录");
+        	} else {
+        		flownotstart.openEdit(row.id, row.formkey);
+        	}
+        }
+	 },"-",{
+		 text:"删除",
+		 iconCls: 'icon-remove',
+         handler: function() {
+        	 var row = $('#flownotstarttable').datagrid("getSelected");
+        	 if (row == null) {
+        		 common.warning("请先选择一条记录");
+        	 } else {
+        		 common.confirm("确定要删除吗?", function() {
+        			 flownotstart.del(row.id);
+        		 });
+        	 }
+         }
+	 }]
+});
+	
+flownotstart.del = function(id) {
+	$.ajax({
+		type:"post",
+		url:path + "xtgl/delLeaveById.action",
+		data:{"leavevo.id":id},
+		async:true,
+		dataType:"text",
+		success:function(d) {
+			$('#flownotstarttable').datagrid("load");
+		}
+	});
+};
+flownotstart.openEdit = function(id, formkey) {
+	index.state = "1";
+	index.businesskey = id;
+	$("#flowFormWin").dialog("open");
+	$('#flowFormWin').panel("refresh", path + formkey);
+};
+</script>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="xtglMapper">
+
+    <!-- 登录检查 -->
+	<select id="chkLogin" parameterType="com.yx.sm.frame.xtgl.vo.UserVO" resultType="com.yx.sm.frame.xtgl.vo.UserVO">
+		select * from t_user where userid=#{userid} and password=#{password}
+	</select>
+	
+	<!-- 添加请假单 -->
+	<select id="saveLeave" parameterType="com.yx.sm.frame.xtgl.vo.LeaveVO">
+		INSERT INTO t_leave(id, userid, days, type, content, createtime, applytime, flowdefid) 
+	VALUES(#{id}, #{userid}, #{days}, #{type}, #{content}, now(), #{applytime}, #{flowdefid})
+	</select>
+	
+	<!-- 未启动请假单 -->
+	<select id="notStartLeave" parameterType="map" resultType="com.yx.sm.frame.xtgl.vo.LeaveVO">
+		select * from t_leave where flowintid is null limit ${startRow}, ${rows}
+	</select>
+	<select id="notStartLeaveTotal" resultType="int">
+		select count(*) from t_leave where flowintid is null
+	</select>
+	
+	<!-- 启动请假单 更新表单 -->
+	<select id="updLeave" parameterType="com.yx.sm.frame.xtgl.vo.LeaveVO">
+		update t_leave set submittime=now(), flowintid=#{flowintid} where id=#{id}
+	</select>
+	
+	<!-- 删除表单 -->
+	<select id="delLeaveById" parameterType="com.yx.sm.frame.xtgl.vo.LeaveVO">
+		delete from t_leave where id=#{id}
+	</select>
+	
+	<select id="getUserById" parameterType="com.yx.sm.frame.xtgl.vo.UserVO" resultType="com.yx.sm.frame.xtgl.vo.UserVO">
+		select * from t_user where id=#{id}
+	</select>
+	
+	<select id="getLeaveById" parameterType="com.yx.sm.frame.xtgl.vo.LeaveVO" resultType="com.yx.sm.frame.xtgl.vo.LeaveVO">
+		select * from t_leave where id=#{id}
+	</select>
+	
+	<select id="saveComment" parameterType="com.yx.sm.frame.xtgl.vo.CommentsVO">
+		INSERT INTO t_comments(id, businessid, content, userid, state, createtime) 
+	VALUES(#{id}, #{businessid}, #{content}, #{userid}, #{state}, now())
+	</select>
+	
+	<!-- 更新请假表 -->
+	<select id="updateLeave" parameterType="com.yx.sm.frame.xtgl.vo.LeaveVO">
+		UPDATE t_leave SET days=#{days}, type=#{type}, content=#{content}, applytime=#{applytime}
+		WHERE id=#{id}
+	</select>
+	
+	<!-- 查询评论 -->
+	<select id="getCommentsByBId" parameterType="com.yx.sm.frame.xtgl.vo.CommentsVO" resultType="com.yx.sm.frame.xtgl.vo.CommentsVO">
+		SELECT * FROM t_comments where businessid=#{businessid} order by str_to_date(createtime,'%Y-%m-%d %H:%i:%s')
+	</select>
+	
+	<!-- 查询请假ByUserId -->
+	<select id="getLeaveByUserId" parameterType="com.yx.sm.frame.xtgl.vo.LeaveVO" resultType="com.yx.sm.frame.xtgl.vo.LeaveVO">
+		select * from t_leave where userid=#{userid}
+	</select>
+	
+</mapper>

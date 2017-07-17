@@ -1,0 +1,37 @@
+<table id="todealtasktable"></table>
+<script type="text/javascript">
+var todealtask = {};
+$('#todealtasktable').datagrid({
+	 url:path+"xtgl/toDealTask.action",
+	 method:"post",
+	 striped:true,
+	 fit:true,
+	 pagination:true,
+	 singleSelect:true,
+	 queryParams:{},
+	 pageSize:100,
+	 pageList:[100,200],
+	 fitColumns:true,
+	 rownumbers:true,
+	 loadMsg:"数据加载中...",
+	 columns:[[
+	    {field:'flowname',title:'流程名称',align:'left',width:100},
+	    {field:'name',title:'当前任务',align:'left',width:100},
+	    {field:'assignee',title:'当前办理人',align:'left',width:100},
+	    {field:'applyusername',title:'申请人',align:'left',width:100},
+	    {field:'starttime',title:'申请时间',align:'center',width:100},
+	    {field:'formkey',title:'操作',align:'center',width:100,formatter:function(value, row, index) {
+			return '<a href="#" onclick=todealtask.toDeal("'+value+'","'
+				+row.businesskey+'","'+row.flowdepid+'","'+row.imagename+'","'+row.id+'")>办理任务</a>';
+	    }}
+	 ]]
+});
+todealtask.toDeal = function(url, businesskey, flowdepid, flowimagename, taskid) {
+	index.flowdepid = flowdepid;
+	index.flowimagename = flowimagename;
+	index.businesskey = businesskey;
+	index.taskid = taskid;
+	$("#flowFormWin").dialog("open");
+	$('#flowFormWin').panel("refresh", path + url);
+};
+</script>

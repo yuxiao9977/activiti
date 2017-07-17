@@ -1,0 +1,33 @@
+<table id="selectflowmodaltable"></table>
+<script type="text/javascript">
+var selectflowmodal = {};
+$('#selectflowmodaltable').datagrid({
+	 url:path+"xtgl/selectFlowModalByPage.action",
+	 method:"post",
+	 striped:true,
+	 fit:true,
+	 pagination:true,
+	 singleSelect:true,
+	 queryParams:{},
+	 pageSize:100,
+	 pageList:[100,200],
+	 fitColumns:true,
+	 rownumbers:true,
+	 loadMsg:"模板加载中...",
+	 columns:[[
+	    {field:'name',title:'流程定义名称',align:'left',width:100},
+	    {field:'key',title:'KEY',align:'left',width:100},
+	    {field:'version',title:'版本',align:'left',width:100},
+	 	{field:"time",title:"创建时间",align:'left',width:100},
+	 	{field:"desc",title:"操作",align:'center',width:100,formatter:function(value, row, index){
+			return '<a href="#" onclick=selectflowmodal.openForm("'+value+'","'+row.id+'")>创建流程</a>';
+	 	}}
+	 ]]
+});
+selectflowmodal.openForm = function(url, flowdefid) {
+	index.flowdefid = flowdefid;
+	index.state = "0";
+	$("#flowFormWin").dialog("open");
+	$('#flowFormWin').panel("refresh", path + url);
+};
+</script>

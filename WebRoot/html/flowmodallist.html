@@ -1,0 +1,68 @@
+<table id="flowmodaltable"></table>
+<script type="text/javascript">
+var flowmodal = {};
+$('#flowmodaltable').datagrid({
+	 url:path+"xtgl/getFlowModalByPage.action",
+	 method:"post",
+	 striped:true,
+	 fit:true,
+	 pagination:true,
+	 singleSelect:true,
+	 queryParams:{},
+	 pageSize:100,
+	 pageList:[100,200],
+	 fitColumns:true,
+	 rownumbers:true,
+	 loadMsg:"模板加载中...",
+	 columns:[[
+		{field:'id',title:'流程定义ID',align:'left',width:100},
+	    {field:'name',title:'流程定义名称',align:'left',width:100},
+	    {field:'key',title:'KEY',align:'left',width:100},
+	    {field:'deployid',title:'流程部署ID',align:'left',width:100},
+	    {field:'deployname',title:'流程部署名称',align:'left',width:100},
+	    {field:'version',title:'版本',align:'left',width:100},
+	 	{field:"time",title:"创建时间",align:'left',width:100,formatter:function(value, row, index){
+			return value;
+	 	}}
+	 ]],
+	 toolbar: [{
+		 text:"添加",
+		 iconCls: 'icon-add',
+         handler: function() {
+        	 index.openProcessModal();
+         }
+	 },"-",{
+		 text:"删除",
+		 iconCls: 'icon-remove',
+         handler: function() {
+        	 var row = $('#flowmodaltable').datagrid("getSelected");
+        	 if (row == null) {
+        		 common.warning("请先选择一条记录");
+        	 } else {
+        		 common.confirm("确定要删除吗?", function() {
+        			 flowmodal.delflowmodal(row.deployid);
+        		 });
+        	 }
+         }
+	 },"-",{
+		 text:"刷新",
+		 iconCls: 'icon-reload',
+         handler: function() {
+       		$('#flowmodaltable').datagrid("load");
+         }
+	 }]
+});
+	
+flowmodal.delflowmodal = function(deployId) {
+	$.ajax({
+		type:"post",
+		url:path + "xtgl/delFlowModal.action",
+		data:{"deployId":deployId},
+		async:true,
+		dataType:"text",
+		success:function(d) {
+			$('#flowmodaltable').datagrid("load");
+		}
+	});
+};
+</script>

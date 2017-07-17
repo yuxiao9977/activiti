@@ -1,0 +1,116 @@
+<div class="easyui-tabs" style="width:100%;height:100%">
+    <div title="流程信息查看" style="padding:10px;display:none;overflow:auto;">
+    	<fieldset style="border:1px solid #e1e1e1">
+			<legend style="color:#999999">申请单信息</legend>
+	        <table style="margin:20px">
+				<tr>
+					<td width="60px">申请人员</td><td><input id="leaveUserName" class="easyui-textbox" disabled style="width:200px"/></td>
+					<td style="padding-left:30px;width:60px">请假时间</td><td><input id="leaveTime" class="easyui-datetimebox" style="width:200px"></td>
+				</tr>
+				<tr>
+					<td width="60px">请假类型</td>
+					<td>
+						<select id="leaveType" class="easyui-combobox" style="width:200px;">
+							<option value="事假">事假</option>
+							<option value="病假">病假</option>
+							<option value="婚假">婚假</option>
+							<option value="丧假">丧假</option>
+						</select>
+					</td>
+					<td style="padding-left:30px;width:60px">请假天数</td><td><input id="leaveDays" class="easyui-numberspinner" value="1" data-options="increment:1" style="width:200px;"></td>
+				</tr>
+				<tr>
+					<td width="60px">请假事由</td><td colspan="3">
+						<input id="leaveContent" class="easyui-textbox" data-options="multiline:true" style="width:100%;height:80px"/>
+					</td>
+				</tr>
+				<tr>
+					<td width="60px">创建时间</td><td id="createTime"></td>
+					<td style="padding-left:30px;width:60px">提交时间</td><td id="submitTime"></td>
+				</tr>
+			</table>
+		</fieldset>
+    </div>
+    <div title="审批记录" style="overflow:auto;display:none;">
+    	<table id="commentstable"></table>
+    </div>
+    <div title="流程图查看" style="overflow:auto;display:none;">
+        <div id="imageFocusDiv" style="border:2px solid #e02222;position:absolute;"></div>
+        <img id="flowImage"/>
+    </div>
+</div>
+<script type="text/javascript">
+	$.ajax({
+		type:"post",
+		url:path + "xtgl/getLeaveById.action",
+		data:{"leavevo.id":index.businesskey},
+		async:true,
+		dataType:"json",
+		success:function(data) {
+			$("#leaveUserName").textbox("setValue", data.username);
+			$("#leaveTime").datetimebox("setValue", data.applytime);
+			$("#leaveType").combobox("setValue", data.type).combobox("setText", data.type);
+			$("#leaveDays").numberspinner("setValue", data.days);
+			$("#leaveContent").textbox("setValue", data.content);
+			$("#createTime").html(data.createtime);
+			$("#submitTime").html(data.submittime);
+		}
+	});
+	$("#flowImage").attr("src", path + "xtgl/viewImage.action?depId=" + index.flowdepid + "&imageName=" + index.flowimagename);
+	$.ajax({
+		type:"post",
+		url:path + "xtgl/findCoordingByTask.action",
+		data:{"taskid":index.taskid},
+		async:true,
+		dataType:"json",
+		success:function(data) {
+			var x = parseFloat(data.x) + 5;
+			var y = parseFloat(data.y) + 56;
+			$("#imageFocusDiv").css({"left":x+"px","top":y+"px","width":data.w,"height":data.h});
+		}
+	});
+	function saveFlowForm() {
+		$.ajax({
+			type:"post",
+			url:path + "xtgl/updateLeaveToNext.action",
+			data:{
+				"leavevo.id":index.businesskey,
+				"leavevo.days":$("#leaveDays").val(),
+				"leavevo.type":$("#leaveType").combobox("getValue"),
+				"leavevo.content":$("#leaveContent").val(),
+				"leavevo.applytime":$("#leaveTime").datetimebox("getValue"),
+				"taskid":index.taskid
+			},
+			async:true,
+			dataType:"json",
+			success:function(data) {
+				common.alert(data);
+				$("#flowFormWin").dialog("close");
+				$('#todealtasktable').datagrid("reload");
+			}
+		});
+	}
+	
+	$('#commentstable').datagrid({
+		 url:path+"xtgl/getCommentsByBId.action",
+		 method:"post",
+		 striped:true,
+		 fit:true,
+		 singleSelect:true,
+		 queryParams:{"commentsvo.businessid":index.businesskey},
+		 fitColumns:true,
+		 rownumbers:true,
+		 loadMsg:"数据加载中...",
+		 columns:[[
+		    {field:'username',title:'审批人',align:'left',width:100},
+		    {field:'state',title:'审批结果',align:'left',width:100,formatter:function(value, row, index){
+				if (value == 0) {
+					return "同意";
+				}
+		    	return "驳回";
+		 	}},
+		    {field:'content',title:'审批意见',align:'left',width:100},
+		    {field:'createtime',title:'审批时间',align:'left',width:100}
+		 ]]
+	});
+</script>

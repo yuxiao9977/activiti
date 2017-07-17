@@ -1,0 +1,35 @@
+<table id="notcompletetable"></table>
+<script type="text/javascript">
+var notcomplete = {};
+$('#notcompletetable').datagrid({
+	 url:path+"xtgl/notCompleteTask.action",
+	 method:"post",
+	 striped:true,
+	 fit:true,
+	 singleSelect:true,
+	 queryParams:{"leavevo.userid":$("#userid").val()},
+	 fitColumns:true,
+	 rownumbers:true,
+	 loadMsg:"数据加载中...",
+	 columns:[[
+	    {field:'flowname',title:'流程名称',align:'left',width:100},
+	    {field:'name',title:'当前任务',align:'left',width:100},
+	    {field:'assignee',title:'当前办理人',align:'left',width:100},
+	    {field:'applyusername',title:'申请人',align:'left',width:100},
+	    {field:'starttime',title:'申请时间',align:'center',width:100},
+	    {field:'formkey',title:'操作',align:'center',width:100,formatter:function(value, row, index) {
+			return '<a href="#" onclick=notcomplete.toDeal("'+value+'","'
+				+row.businesskey+'","'+row.flowdepid+'","'+row.imagename+'","'+row.id+'","'+row.state+'")>查看</a>';
+	    }}
+	 ]]
+});
+notcomplete.toDeal = function(url, businesskey, flowdepid, flowimagename, taskid, state) {
+	index.flowdepid = flowdepid;
+	index.flowimagename = flowimagename;
+	index.businesskey = businesskey;
+	index.taskid = taskid;
+	index.hisstate = state;
+	$("#flowFormWin").dialog("open");
+	$('#flowFormWin').panel("refresh", path + url);
+};
+</script>

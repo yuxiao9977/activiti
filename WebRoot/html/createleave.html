@@ -1,0 +1,89 @@
+<div style="padding:10px">
+	<fieldset style="border:1px solid #e1e1e1">
+		<legend style="color:#999999">申请单信息</legend>
+		<table style="margin:20px">
+			<tr>
+				<td width="60px">申请人员</td><td><input id="leaveUserName" disabled class="easyui-textbox" style="width:200px"/></td>
+				<td style="padding-left:30px;width:60px">请假时间</td><td><input id="leaveTime" class="easyui-datetimebox" style="width:200px"></td>
+			</tr>
+			<tr>
+				<td width="60px">请假类型</td>
+				<td>
+					<select id="leaveType" class="easyui-combobox" style="width:200px;">
+						<option value="事假">事假</option>
+						<option value="病假">病假</option>
+						<option value="婚假">婚假</option>
+						<option value="丧假">丧假</option>
+					</select>
+				</td>
+				<td style="padding-left:30px;width:60px">请假天数</td><td><input id="leaveDays" class="easyui-numberspinner" value="1" data-options="increment:1" style="width:200px;"></td>
+			</tr>
+			<tr>
+				<td width="60px">请假事由</td><td colspan="3">
+					<input id="leaveContent" class="easyui-textbox" data-options="multiline:true" style="width:100%;height:80px"/>
+				</td>
+			</tr>
+			<tr></tr>
+		</table>
+	</fieldset>
+</div>
+<script type="text/javascript">
+	if (index.state == "1") {
+		$.ajax({
+			type:"post",
+			url:path + "xtgl/getLeaveById.action",
+			data:{"leavevo.id":index.businesskey},
+			async:true,
+			dataType:"json",
+			success:function(data) {
+				$("#leaveUserName").textbox("setValue", data.username);
+				$("#leaveTime").datetimebox("setValue", data.applytime);
+				$("#leaveType").combobox("setValue", data.type).combobox("setText", data.type);
+				$("#leaveDays").numberspinner("setValue", data.days);
+				$("#leaveContent").textbox("setValue", data.content);
+			}
+		});
+	} else {
+		$("#leaveUserName").val($("#username").val());
+	}
+	function saveFlowForm() {
+		if (index.state == "0") {
+			$.ajax({
+				type:"post",
+				url:path + "xtgl/saveLeave.action",
+				data:{
+					"leavevo.userid":$("#userid").val(),
+					"leavevo.days":$("#leaveDays").val(),
+					"leavevo.type":$("#leaveType").combobox("getValue"),
+					"leavevo.content":$("#leaveContent").val(),
+					"leavevo.applytime":$("#leaveTime").datetimebox("getValue"),
+					"leavevo.flowdefid":index.flowdefid
+				},
+				async:true,
+				dataType:"json",
+				success:function(data) {
+					common.alert(data);
+					$("#flowFormWin").dialog("close");
+				}
+			});
+		} else {
+			$.ajax({
+				type:"post",
+				url:path + "xtgl/updateLeaveById.action",
+				data:{
+					"leavevo.id":index.businesskey,
+					"leavevo.days":$("#leaveDays").val(),
+					"leavevo.type":$("#leaveType").combobox("getValue"),
+					"leavevo.content":$("#leaveContent").val(),
+					"leavevo.applytime":$("#leaveTime").datetimebox("getValue")
+				},
+				async:true,
+				dataType:"json",
+				success:function(data) {
+					$("#flowFormWin").dialog("close");
+					$('#flownotstarttable').datagrid("reload");
+				}
+			});
+		}
+	}
+</script>
