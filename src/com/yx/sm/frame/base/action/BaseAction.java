@@ -17,7 +17,7 @@ import com.opensymphony.xwork2.ActionSupport;
 @ParentPackage("global")
 @Result(name="ajax", type="json", params={"root", "objectData"})
 public class BaseAction extends ActionSupport implements ServletRequestAware, 
-	ServletResponseAware, ServletContextAware, SessionAware {
+	ServletResponseAware, ServletContextAware, SessionAware { 
 	
 	private static final long serialVersionUID = -7845430543745340993L;
 	
