@@ -8,13 +8,6 @@ import org.junit.Test;
 public class UnitTest {
 	
 	@Test
-	public void test1() {
-		int[] a = new int[1]; 
-		a[0] = 2;   
-		System.out.println(a[0]);
-	}
-	
-	@Test
 	public void test2() {
 		Map<String , Integer> map = new TreeMap<String , Integer>();   
 		map.put("B" , 2);
