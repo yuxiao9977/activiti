@@ -21,7 +21,7 @@
   </filter-mapping>
   <context-param>
     <param-name>xmlFile</param-name>
-    <param-value>WEB-INF\classes\config\proxool-config\proxool.xml</param-value>
+    <param-value>\WEB-INF\classes\config\proxool-config\proxool.xml</param-value>
   </context-param>
   <servlet>
     <servlet-name>pool</servlet-name>
