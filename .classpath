@@ -71,7 +71,6 @@
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/struts2-junit-plugin-2.3.1.2.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/struts2-spring-plugin-2.3.1.2.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/thumbnailator-0.4.2.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/tools.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/webservice-V1.0.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/whatisjava.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/xalan-2.7.0.jar"/>
