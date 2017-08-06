@@ -14,6 +14,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 		<property name="transactionManager" ref="transactionManager" />
 		<!-- 设置建表策略，如果没有表，自动创建表 -->
 		<property name="databaseSchemaUpdate" value="true" />
+		<!-- <property name="databaseSchema" value="activiti"></property> -->
 	</bean>
 	
 	<!-- 创建流程引擎对象 -->
